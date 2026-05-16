@@ -6,122 +6,479 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Furugi">
-<meta name="theme-color" content="#0a0a0a">
+<meta name="theme-color" content="#0c0b09">
 <title>Furugi OS</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;700&display=swap');
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-:root{--bg:#0a0a0a;--surface:#141414;--surface2:#1c1c1c;--border:#272727;--green:#3ecf6e;--yellow:#e8a838;--blue:#4a90d9;--red:#e74c3c;--text:#f0f0f0;--muted:#666}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;height:100dvh;display:flex;flex-direction:column;overflow:hidden}
+:root{
+  --bg:#0c0b09;
+  --surface:#131210;
+  --surface2:#1a1916;
+  --surface3:#201e1b;
+  --border:#2a2824;
+  --border2:#332f2b;
+  --green:#6E7B61;
+  --green-dim:#5a6550;
+  --green-glow:#6E7B6122;
+  --yellow:#9a8a5a;
+  --blue:#5a7080;
+  --red:#8a4a42;
+  --text:#e8e4dc;
+  --text2:#b8b2a8;
+  --muted:#6a6560;
+  --muted2:#4a4540;
+  --font-serif:'Cormorant Garamond',Georgia,serif;
+  --font-sans:'IBM Plex Sans',system-ui,sans-serif;
+  --font-mono:'IBM Plex Mono',monospace;
+}
+
+/* GRAIN TEXTURE */
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:999;
+  opacity:0.028;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat:repeat;
+  background-size:128px 128px;
+}
+
+body{background:var(--bg);color:var(--text);font-family:var(--font-sans);height:100dvh;display:flex;flex-direction:column;overflow:hidden}
 #app{display:flex;flex-direction:column;height:100dvh;overflow:hidden}
-.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;padding-top:max(10px,env(safe-area-inset-top))}
-.logo{font-family:'Space Mono',monospace;font-size:16px;font-weight:700;color:var(--green);letter-spacing:4px}
-.logo span{color:var(--muted);font-size:10px;letter-spacing:2px;display:block;margin-top:-2px}
+
+/* TOPBAR */
+.topbar{
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  padding:10px 16px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
+  padding-top:max(10px,env(safe-area-inset-top));
+}
+.logo-wrap{}
+.logo{
+  font-family:var(--font-serif);
+  font-size:22px;
+  font-weight:600;
+  color:var(--text);
+  letter-spacing:5px;
+  line-height:1;
+}
+.logo-sub{
+  font-family:var(--font-mono);
+  font-size:7px;
+  color:var(--muted);
+  letter-spacing:3px;
+  text-transform:uppercase;
+  margin-top:2px;
+}
 .tabs{display:flex;gap:3px}
-.tab{background:none;color:var(--muted);border:1px solid var(--border);border-radius:6px;padding:5px 11px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500}
-.tab.active{background:var(--green);color:#000;border-color:var(--green);font-weight:700}
-.stats-row{display:flex;gap:6px;padding:10px 14px;overflow-x:auto;border-bottom:1px solid var(--border);flex-shrink:0;scrollbar-width:none}
+.tab{
+  background:none;
+  color:var(--muted);
+  border:1px solid var(--border);
+  border-radius:3px;
+  padding:5px 12px;
+  font-size:10px;
+  cursor:pointer;
+  font-family:var(--font-mono);
+  letter-spacing:1px;
+  text-transform:uppercase;
+}
+.tab.active{background:var(--green);color:#0c0b09;border-color:var(--green);font-weight:500}
+
+/* STATS ROW */
+.stats-row{
+  display:flex;gap:0;
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+  overflow-x:auto;
+  scrollbar-width:none;
+}
 .stats-row::-webkit-scrollbar{display:none}
-.stat{background:var(--surface);border-radius:8px;padding:7px 11px;border:1px solid var(--border);min-width:72px;flex-shrink:0}
-.stat-label{font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;font-family:'Space Mono',monospace}
-.stat-val{font-size:15px;font-weight:700;margin-top:2px;font-family:'Space Mono',monospace}
-.chat-wrap{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;scrollbar-width:none}
+.stat{
+  padding:8px 14px;
+  border-right:1px solid var(--border);
+  min-width:80px;
+  flex-shrink:0;
+}
+.stat-label{
+  font-family:var(--font-mono);
+  font-size:7px;
+  color:var(--muted);
+  text-transform:uppercase;
+  letter-spacing:2px;
+}
+.stat-val{
+  font-family:var(--font-mono);
+  font-size:14px;
+  font-weight:500;
+  margin-top:3px;
+}
+
+/* SYSTEM BAR */
+.system-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:4px 16px;
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+  background:var(--surface);
+}
+.system-bar-left{
+  font-family:var(--font-mono);
+  font-size:7px;
+  color:var(--muted2);
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+}
+.system-bar-right{
+  font-family:var(--font-mono);
+  font-size:7px;
+  color:var(--muted2);
+  letter-spacing:1px;
+}
+
+/* CHAT */
+.chat-wrap{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;scrollbar-width:none}
 .chat-wrap::-webkit-scrollbar{display:none}
-.bubble{max-width:84%;padding:10px 14px;font-size:13px;line-height:1.55;border-radius:14px}
-.bubble.user{align-self:flex-end;background:var(--green);color:#000;border-bottom-right-radius:3px;font-weight:500}
-.bubble.ai{align-self:flex-start;background:var(--surface2);color:var(--text);border-bottom-left-radius:3px;border:1px solid var(--border)}
-.typing{align-self:flex-start;background:var(--surface2);border:1px solid var(--border);border-radius:14px 14px 14px 3px;padding:10px 16px;font-size:18px;color:var(--muted)}
-.input-row{padding:10px 14px;padding-bottom:max(10px,env(safe-area-inset-bottom));border-top:1px solid var(--border);display:flex;gap:8px;background:var(--surface);flex-shrink:0}
-.msg-input{flex:1;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 14px;font-size:13px;outline:none;font-family:'DM Sans',sans-serif;resize:none;max-height:80px}
-.send-btn{background:var(--green);color:#000;border:none;border-radius:10px;padding:9px 16px;font-weight:700;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;flex-shrink:0}
-.quick-actions{display:flex;gap:6px;padding:8px 14px;overflow-x:auto;scrollbar-width:none;flex-shrink:0;border-bottom:1px solid var(--border)}
+.bubble{max-width:86%;padding:10px 14px;font-size:13px;line-height:1.6;border-radius:2px}
+.bubble.user{
+  align-self:flex-end;
+  background:var(--green);
+  color:#0c0b09;
+  font-family:var(--font-sans);
+  font-weight:500;
+  font-size:13px;
+}
+.bubble.ai{
+  align-self:flex-start;
+  background:var(--surface2);
+  color:var(--text2);
+  border:1px solid var(--border);
+  font-family:var(--font-sans);
+  font-size:13px;
+  font-weight:300;
+}
+.typing{
+  align-self:flex-start;
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:2px;
+  padding:10px 16px;
+  font-size:16px;
+  color:var(--muted);
+  font-family:var(--font-mono);
+}
+
+/* QUICK ACTIONS */
+.quick-actions{
+  display:flex;gap:6px;padding:8px 16px;
+  overflow-x:auto;scrollbar-width:none;
+  flex-shrink:0;
+  border-bottom:1px solid var(--border);
+  background:var(--surface);
+}
 .quick-actions::-webkit-scrollbar{display:none}
-.qa-btn{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:20px;padding:5px 12px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;flex-shrink:0}
-.list-wrap{flex:1;overflow-y:auto;padding:0 14px 12px;scrollbar-width:none}
+.qa-btn{
+  background:none;
+  border:1px solid var(--border2);
+  color:var(--text2);
+  border-radius:2px;
+  padding:5px 11px;
+  font-size:10px;
+  cursor:pointer;
+  font-family:var(--font-mono);
+  white-space:nowrap;
+  flex-shrink:0;
+  letter-spacing:.5px;
+}
+
+/* INPUT */
+.input-row{
+  padding:10px 16px;
+  padding-bottom:max(10px,env(safe-area-inset-bottom));
+  border-top:1px solid var(--border);
+  display:flex;gap:8px;
+  background:var(--surface);
+  flex-shrink:0;
+}
+.msg-input{
+  flex:1;
+  background:var(--bg);
+  border:1px solid var(--border);
+  color:var(--text);
+  border-radius:2px;
+  padding:9px 14px;
+  font-size:13px;
+  outline:none;
+  font-family:var(--font-sans);
+  font-weight:300;
+  resize:none;
+  max-height:80px;
+}
+.msg-input::placeholder{color:var(--muted)}
+.send-btn{
+  background:var(--green);
+  color:#0c0b09;
+  border:none;
+  border-radius:2px;
+  padding:9px 16px;
+  font-weight:500;
+  font-size:13px;
+  cursor:pointer;
+  font-family:var(--font-mono);
+  flex-shrink:0;
+}
+
+/* STOCK */
+.list-wrap{flex:1;overflow-y:auto;padding:0 16px 12px;scrollbar-width:none}
 .list-wrap::-webkit-scrollbar{display:none}
 .controls{display:flex;gap:6px;padding:10px 0}
-.controls input,.controls select{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px 10px;font-size:12px;outline:none;font-family:'DM Sans',sans-serif}
+.controls input,.controls select{
+  background:var(--surface2);
+  border:1px solid var(--border);
+  color:var(--text);
+  border-radius:2px;
+  padding:7px 10px;
+  font-size:11px;
+  outline:none;
+  font-family:var(--font-mono);
+}
 .controls input{flex:1;min-width:0}
-.count-label{font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;padding-bottom:6px}
+.controls input::placeholder{color:var(--muted)}
+.count-label{
+  font-family:var(--font-mono);
+  font-size:8px;
+  color:var(--muted);
+  letter-spacing:2px;
+  text-transform:uppercase;
+  padding-bottom:8px;
+}
 table{width:100%;border-collapse:collapse;font-size:12px}
-th{text-align:left;font-size:8px;color:var(--muted);padding:6px 8px;border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:1.5px;font-family:'Space Mono',monospace;white-space:nowrap}
-tbody tr td{padding:10px 8px;border-bottom:1px solid var(--border);vertical-align:middle}
+th{
+  text-align:left;
+  font-family:var(--font-mono);
+  font-size:7px;
+  color:var(--muted);
+  padding:6px 8px;
+  border-bottom:1px solid var(--border);
+  text-transform:uppercase;
+  letter-spacing:2px;
+  white-space:nowrap;
+}
+tbody tr td{
+  padding:10px 8px;
+  border-bottom:1px solid var(--border);
+  vertical-align:middle;
+  font-family:var(--font-sans);
+  font-size:12px;
+  font-weight:300;
+}
+tbody tr:active td{background:var(--surface2)}
 
-.badge{display:inline-block;padding:2px 6px;border-radius:4px;font-size:9px;font-weight:700;letter-spacing:.5px;font-family:'Space Mono',monospace}
-.badge.sold{background:#3ecf6e18;color:var(--green);border:1px solid #3ecf6e33}
-.badge.posted{background:#e8a83818;color:var(--yellow);border:1px solid #e8a83833}
-.badge.unposted{background:#4a90d918;color:var(--blue);border:1px solid #4a90d933}
-.badge.kept{background:#66666618;color:var(--muted);border:1px solid #66666633}
-.badge.sourced{background:#9b59b618;color:#9b59b6;border:1px solid #9b59b633}
-.badge.cleaned{background:#1abc9c18;color:#1abc9c;border:1px solid #1abc9c33}
-.badge.photographed{background:#e67e2218;color:#e67e22;border:1px solid #e67e2233}
-.badge.shipped{background:#3ecf6e18;color:var(--green);border:1px solid #3ecf6e33}
-.green{color:var(--green);font-weight:600;font-family:'Space Mono',monospace}
-.red{color:var(--red);font-weight:600;font-family:'Space Mono',monospace}
+/* BADGES */
+.badge{
+  display:inline-block;
+  padding:2px 6px;
+  border-radius:1px;
+  font-size:8px;
+  font-weight:500;
+  letter-spacing:1.5px;
+  font-family:var(--font-mono);
+  text-transform:uppercase;
+}
+.badge.sold{background:var(--green-glow);color:var(--green);border:1px solid var(--green-dim)}
+.badge.posted{background:#9a8a5a18;color:var(--yellow);border:1px solid #9a8a5a44}
+.badge.unposted{background:#5a708018;color:var(--blue);border:1px solid #5a708044}
+.badge.kept{background:#4a454018;color:var(--muted);border:1px solid var(--border2)}
+.badge.sourced{background:#7a6a8018;color:#9a8aaa;border:1px solid #7a6a8044}
+.badge.cleaned{background:#5a807018;color:#7aaa9a;border:1px solid #5a807044}
+.badge.photographed{background:#806a4018;color:#aa8a5a;border:1px solid #806a4044}
+.badge.shipped{background:var(--green-glow);color:var(--green);border:1px solid var(--green-dim)}
+
+.green{color:var(--green);font-weight:500;font-family:var(--font-mono)}
+.red{color:var(--red);font-weight:500;font-family:var(--font-mono)}
 .muted{color:var(--muted)}
-.td-item{max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500}
-.td-mono{font-family:'Space Mono',monospace;font-size:11px}
-.row-btn{display:contents;background:none;border:none;color:inherit;font:inherit;cursor:pointer;text-align:left;width:100%;}
+.td-mono{font-family:var(--font-mono);font-size:11px}
+.td-item{max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
 /* MODAL */
-.modal-overlay{position:fixed;inset:0;background:#000a;z-index:100;display:flex;align-items:flex-end}
-.modal{background:var(--surface);border-radius:20px 20px 0 0;padding:20px;width:100%;max-height:88dvh;overflow-y:auto;border-top:1px solid var(--border)}
-.modal-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 16px}
-.modal-title{font-size:15px;font-weight:700;margin-bottom:4px}
-.modal-sku{font-family:'Space Mono',monospace;font-size:10px;color:var(--green);margin-bottom:16px}
+.modal-overlay{position:fixed;inset:0;background:#000000bb;z-index:100;display:flex;align-items:flex-end}
+.modal{
+  background:var(--surface);
+  border-radius:0;
+  border-top:1px solid var(--border2);
+  padding:20px;
+  width:100%;
+  max-height:88dvh;
+  overflow-y:auto;
+}
+.modal-handle{width:32px;height:3px;background:var(--border2);border-radius:1px;margin:0 auto 18px}
+.modal-label{
+  font-family:var(--font-mono);
+  font-size:7px;
+  color:var(--muted);
+  letter-spacing:3px;
+  text-transform:uppercase;
+  margin-bottom:2px;
+}
+.modal-title{
+  font-family:var(--font-serif);
+  font-size:20px;
+  font-weight:600;
+  color:var(--text);
+  margin-bottom:2px;
+  letter-spacing:1px;
+}
+.modal-sku{
+  font-family:var(--font-mono);
+  font-size:9px;
+  color:var(--green);
+  letter-spacing:2px;
+  margin-bottom:18px;
+}
 .field-group{margin-bottom:14px}
-.field-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;font-family:'Space Mono',monospace;margin-bottom:5px}
-.field-input{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px 12px;font-size:14px;outline:none;font-family:'DM Sans',sans-serif}
+.field-label{
+  font-family:var(--font-mono);
+  font-size:8px;
+  color:var(--muted);
+  text-transform:uppercase;
+  letter-spacing:2px;
+  margin-bottom:6px;
+}
+.field-input{
+  width:100%;
+  background:var(--bg);
+  border:1px solid var(--border);
+  color:var(--text);
+  border-radius:2px;
+  padding:10px 12px;
+  font-size:13px;
+  outline:none;
+  font-family:var(--font-sans);
+  font-weight:300;
+}
+.field-input::placeholder{color:var(--muted)}
 textarea.field-input{resize:vertical;min-height:60px}
 .status-grid{display:flex;flex-wrap:wrap;gap:6px}
-.status-chip{padding:7px 12px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--surface2);color:var(--muted);touch-action:manipulation;user-select:none}
-.status-chip.active{border-color:var(--green);color:var(--green);background:#3ecf6e18}
+.status-chip{
+  padding:6px 11px;border-radius:2px;font-size:10px;font-weight:500;
+  cursor:pointer;border:1px solid var(--border);
+  background:var(--surface2);color:var(--muted);
+  touch-action:manipulation;user-select:none;
+  font-family:var(--font-mono);letter-spacing:1px;text-transform:uppercase;
+}
+.status-chip.active{border-color:var(--green);color:var(--green);background:var(--green-glow)}
 .platform-grid{display:flex;flex-wrap:wrap;gap:6px}
-.platform-chip{padding:7px 12px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--surface2);color:var(--muted);touch-action:manipulation;user-select:none}
-.platform-chip.active{border-color:var(--blue);color:var(--blue);background:#4a90d918}
+.platform-chip{
+  padding:6px 11px;border-radius:2px;font-size:10px;font-weight:500;
+  cursor:pointer;border:1px solid var(--border);
+  background:var(--surface2);color:var(--muted);
+  touch-action:manipulation;user-select:none;
+  font-family:var(--font-mono);letter-spacing:1px;
+}
+.platform-chip.active{border-color:var(--blue);color:var(--blue);background:#5a708018}
 .modal-actions{display:flex;gap:8px;margin-top:20px;padding-bottom:env(safe-area-inset-bottom)}
-.btn{padding:12px 16px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;border:none;flex:1;touch-action:manipulation}
-.btn-primary{background:var(--green);color:#000}
-.btn-secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border)}
-.btn-danger{background:#e74c3c18;color:var(--red);border:1px solid #e74c3c33}
+.btn{
+  padding:12px 16px;border-radius:2px;font-size:11px;font-weight:500;
+  cursor:pointer;font-family:var(--font-mono);border:none;flex:1;
+  touch-action:manipulation;letter-spacing:1px;text-transform:uppercase;
+}
+.btn-primary{background:var(--green);color:#0c0b09}
+.btn-secondary{background:var(--surface2);color:var(--text2);border:1px solid var(--border)}
+.btn-danger{background:#8a4a4218;color:var(--red);border:1px solid #8a4a4244}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .hidden{display:none}
+
 /* ANALYTICS */
-.analytics-wrap{flex:1;overflow-y:auto;padding:14px;scrollbar-width:none}
+.analytics-wrap{flex:1;overflow-y:auto;padding:16px;scrollbar-width:none}
 .analytics-wrap::-webkit-scrollbar{display:none}
-.section-title{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
-.metric-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px}
-.metric-card-title{font-size:11px;color:var(--muted);margin-bottom:8px}
-.metric-big{font-family:'Space Mono',monospace;font-size:24px;font-weight:700;color:var(--green)}
-.metric-sub{font-size:11px;color:var(--muted);margin-top:4px}
+.section-title{
+  font-family:var(--font-serif);
+  font-size:13px;
+  font-weight:600;
+  color:var(--text2);
+  letter-spacing:2px;
+  text-transform:uppercase;
+  margin-bottom:10px;
+  padding-bottom:6px;
+  border-bottom:1px solid var(--border);
+}
+.metric-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:2px;
+  padding:14px;
+  margin-bottom:10px;
+}
+.metric-card-title{
+  font-family:var(--font-mono);
+  font-size:8px;color:var(--muted);
+  margin-bottom:8px;letter-spacing:2px;text-transform:uppercase;
+}
+.metric-big{
+  font-family:var(--font-serif);
+  font-size:28px;
+  font-weight:600;
+  color:var(--green);
+  line-height:1;
+}
+.metric-sub{font-family:var(--font-mono);font-size:9px;color:var(--muted);margin-top:6px;letter-spacing:1px}
 .trip-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
-.trip-bar-wrap{width:100%;background:var(--surface2);border-radius:4px;height:4px;margin-top:4px}
-.trip-bar{height:4px;border-radius:4px;background:var(--green)}
-.cat-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px}
-.suggest-card{background:var(--surface2);border:1px solid var(--green);border-radius:12px;padding:14px;margin-bottom:8px}
-.suggest-reason{font-size:11px;color:var(--muted);margin-top:4px}
+.trip-bar-wrap{width:100%;background:var(--surface3);border-radius:0;height:3px;margin-top:5px}
+.trip-bar{height:3px;border-radius:0;background:var(--green)}
+.cat-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);font-size:12px}
+.suggest-card{
+  background:var(--surface2);
+  border:1px solid var(--border2);
+  border-left:2px solid var(--green);
+  border-radius:0;
+  padding:12px 14px;
+  margin-bottom:8px;
+}
+.suggest-name{font-family:var(--font-serif);font-size:16px;font-weight:600;color:var(--text)}
+.suggest-reason{font-family:var(--font-mono);font-size:9px;color:var(--muted);margin-top:4px;letter-spacing:1px}
 </style>
 </head>
 <body>
 <div id="app">
+
+  <!-- TOPBAR -->
   <div class="topbar">
-    <div class="logo">FURUGI<span>INVENTORY OS</span></div>
+    <div class="logo-wrap">
+      <div class="logo">Furugi</div>
+      <div class="logo-sub">Inventory OS &nbsp;·&nbsp; FG-NO System</div>
+    </div>
     <div class="tabs">
       <button class="tab active" onclick="setView('chat',this)">Chat</button>
       <button class="tab" onclick="setView('list',this)">Stock</button>
       <button class="tab" onclick="setView('analytics',this)">Intel</button>
     </div>
   </div>
-  <div class="stats-row" id="statsRow"><div class="muted" style="font-size:12px;padding:4px">Loading...</div></div>
 
-  <!-- CHAT -->
+  <!-- STATS -->
+  <div class="stats-row" id="statsRow">
+    <div class="stat"><div class="stat-label">Loading</div><div class="stat-val" style="color:var(--muted)">—</div></div>
+  </div>
+
+  <!-- SYSTEM BAR -->
+  <div class="system-bar">
+    <div class="system-bar-left" id="systemBarLeft">Archive Build 01 &nbsp;·&nbsp; Local Registry</div>
+    <div class="system-bar-right" id="systemBarRight">Updated <span id="todayDate"></span></div>
+  </div>
+
+  <!-- CHAT VIEW -->
   <div id="chatView" style="display:flex;flex-direction:column;flex:1;overflow:hidden">
     <div class="quick-actions">
-      <button class="qa-btn" onclick="quickSend('What should I post next?')">📬 Post Next</button>
-      <button class="qa-btn" onclick="quickSend('What has been sitting unposted the longest?')">⏳ Sitting Items</button>
-      <button class="qa-btn" onclick="quickSend('Give me a profit summary by trip')">📊 Trip ROI</button>
-      <button class="qa-btn" onclick="quickSend('Which categories sell fastest?')">🔥 Hot Categories</button>
-      <button class="qa-btn" onclick="quickSend('What is my sell-through rate?')">📈 Sell-Through</button>
-      <button class="qa-btn" onclick="clearChat()" style="color:#e74c3c;border-color:#e74c3c33">🗑 Clear Chat</button>
+      <button class="qa-btn" onclick="quickSend('What should I post next?')">Post Next</button>
+      <button class="qa-btn" onclick="quickSend('What has been sitting unposted the longest?')">Sitting Items</button>
+      <button class="qa-btn" onclick="quickSend('Give me a profit summary by trip')">Trip ROI</button>
+      <button class="qa-btn" onclick="quickSend('Which categories sell fastest?')">Hot Categories</button>
+      <button class="qa-btn" onclick="quickSend('What is my sell-through rate?')">Sell-Through</button>
+      <button class="qa-btn" onclick="clearChat()" style="color:var(--red);border-color:#8a4a4244">Clear Chat</button>
     </div>
     <div class="chat-wrap" id="chatWrap"></div>
     <div class="input-row">
@@ -130,11 +487,11 @@ textarea.field-input{resize:vertical;min-height:60px}
     </div>
   </div>
 
-  <!-- STOCK -->
+  <!-- STOCK VIEW -->
   <div id="listView" style="display:none;flex-direction:column;flex:1;overflow:hidden">
     <div class="list-wrap">
       <div class="controls">
-        <input type="text" id="searchInput" placeholder="Search..." oninput="renderList()">
+        <input type="text" id="searchInput" placeholder="Search registry..." oninput="renderList()">
         <select id="filterSel" onchange="renderList()">
           <option value="all">All</option>
           <option value="unposted">Unposted</option>
@@ -170,16 +527,18 @@ textarea.field-input{resize:vertical;min-height:60px}
     </div>
   </div>
 
-  <!-- INTEL -->
+  <!-- INTEL VIEW -->
   <div id="analyticsView" style="display:none;flex-direction:column;flex:1;overflow:hidden">
     <div class="analytics-wrap" id="analyticsWrap"></div>
   </div>
+
 </div>
 
 <!-- MODAL -->
 <div class="modal-overlay hidden" id="modalOverlay">
   <div class="modal">
     <div class="modal-handle"></div>
+    <div class="modal-label">Garment Record</div>
     <div class="modal-title" id="modalName"></div>
     <div class="modal-sku" id="modalSku"></div>
     <div class="field-group">
@@ -225,7 +584,7 @@ textarea.field-input{resize:vertical;min-height:60px}
       <textarea class="field-input" id="mNotes" placeholder="Single stitch, made in USA, sun fade on shoulders..."></textarea>
     </div>
     <div class="field-group">
-      <div class="field-label">Platforms Listed</div>
+      <div class="field-label">Platforms</div>
       <div class="platform-grid" id="platformGrid"></div>
     </div>
     <div class="field-group">
@@ -252,6 +611,11 @@ let msgs = [{role:"ai",text:"What's good Dee. Talk to me — what sold, what you
 let currentView = "chat";
 let editingItemId = null;
 
+// Set today's date in system bar
+const now = new Date();
+document.getElementById("todayDate").textContent =
+  `${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')}.${String(now.getFullYear()).slice(2)}`;
+
 function genSku(trip, city) {
   const d = new Date();
   const ds = `${String(d.getFullYear()).slice(2)}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
@@ -265,8 +629,8 @@ async function loadData() {
     const r = await fetch(FN_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({loadData:true})});
     const d = await r.json();
     if(d.items){items=d.items;totalSpend=d.totalSpend||814;}
-    if(d.messages && d.messages.length>0){
-      msgs = d.messages.map(m=>({role:m.role==="assistant"?"ai":m.role, text:m.content}));
+    if(d.messages&&d.messages.length>0){
+      msgs=d.messages.map(m=>({role:m.role==="assistant"?"ai":m.role,text:m.content}));
     }
   } catch(e){console.error(e);}
   renderStats();
@@ -274,95 +638,96 @@ async function loadData() {
 }
 
 function getStats() {
-  const sold = items.filter(i=>i.status==="sold");
-  const posted = items.filter(i=>i.status==="posted");
-  const pipeline = items.filter(i=>["unposted","sourced","cleaned","photographed"].includes(i.status));
-  const revenue = sold.reduce((s,i)=>s+(i.sold_price||0),0);
-  const profit = revenue - totalSpend;
-  const str = items.length>0?Math.round((sold.length/items.length)*100):0;
+  const sold=items.filter(i=>i.status==="sold");
+  const posted=items.filter(i=>i.status==="posted");
+  const pipeline=items.filter(i=>["unposted","sourced","cleaned","photographed"].includes(i.status));
+  const revenue=sold.reduce((s,i)=>s+(i.sold_price||0),0);
+  const profit=revenue-totalSpend;
+  const str=items.length>0?Math.round((sold.length/items.length)*100):0;
   return {sold,posted,pipeline,revenue,profit,str};
 }
 
 function renderStats() {
-  const {sold,posted,pipeline,revenue,profit,str} = getStats();
-  document.getElementById("statsRow").innerHTML = `
+  const {sold,posted,pipeline,revenue,profit,str}=getStats();
+  document.getElementById("systemBarLeft").textContent=`Archive Build 01 · ${items.length} Registered Pieces`;
+  document.getElementById("statsRow").innerHTML=`
     <div class="stat"><div class="stat-label">Unposted</div><div class="stat-val" style="color:var(--blue)">${pipeline.length}</div></div>
     <div class="stat"><div class="stat-label">Posted</div><div class="stat-val" style="color:var(--yellow)">${posted.length}</div></div>
     <div class="stat"><div class="stat-label">Sold</div><div class="stat-val" style="color:var(--green)">${sold.length}</div></div>
     <div class="stat"><div class="stat-label">Spent</div><div class="stat-val" style="color:var(--red)">$${totalSpend.toFixed(0)}</div></div>
     <div class="stat"><div class="stat-label">Revenue</div><div class="stat-val" style="color:var(--green)">$${revenue.toFixed(0)}</div></div>
     <div class="stat"><div class="stat-label">Profit</div><div class="stat-val" style="color:${profit>=0?'var(--green)':'var(--red)'}">${profit>=0?"+":""}$${profit.toFixed(0)}</div></div>
-    <div class="stat"><div class="stat-label">STR</div><div class="stat-val">${str}%</div></div>
+    <div class="stat"><div class="stat-label">STR</div><div class="stat-val" style="color:var(--text2)">${str}%</div></div>
   `;
+}
+
+function renderChat() {
+  const wrap=document.getElementById("chatWrap");
+  wrap.innerHTML=msgs.map(m=>`<div class="bubble ${m.role}">${m.text.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</div>`).join("");
+  wrap.scrollTop=wrap.scrollHeight;
 }
 
 async function clearChat() {
   if(!confirm("Clear chat history?")) return;
-  msgs = [{role:"ai",text:"What's good Dee. Talk to me — what sold, what you picking up, what needs to get posted?"}];
+  msgs=[{role:"ai",text:"What's good Dee. Talk to me — what sold, what you picking up, what needs to get posted?"}];
   fetch(FN_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({clearChat:true})}).catch(()=>{});
   renderChat();
 }
 
-function renderChat() {
-  const wrap = document.getElementById("chatWrap");
-  wrap.innerHTML = msgs.map(m=>`<div class="bubble ${m.role}">${m.text.replace(/\n/g,'<br>')}</div>`).join("");
-  wrap.scrollTop = wrap.scrollHeight;
-}
-
 function renderList() {
-  const search = document.getElementById("searchInput").value.toLowerCase();
-  const filter = document.getElementById("filterSel").value;
-  const sort = document.getElementById("sortSel").value;
-  let list = items.filter(i=>(filter==="all"||i.status===filter)&&(i.name||"").toLowerCase().includes(search));
+  const search=document.getElementById("searchInput").value.toLowerCase();
+  const filter=document.getElementById("filterSel").value;
+  const sort=document.getElementById("sortSel").value;
+  let list=items.filter(i=>(filter==="all"||i.status===filter)&&(i.name||"").toLowerCase().includes(search));
   if(sort==="trip") list.sort((a,b)=>(a.trip||1)-(b.trip||1));
   else if(sort==="profit") list.sort((a,b)=>((b.sold_price||0)-(b.cost||0))-((a.sold_price||0)-(a.cost||0)));
   else if(sort==="sold") list.sort((a,b)=>(b.sold_price||0)-(a.sold_price||0));
   else if(sort==="name") list.sort((a,b)=>(a.name||"").localeCompare(b.name||""));
-  document.getElementById("countLabel").textContent = `${list.length} items`;
+  document.getElementById("countLabel").textContent=`${list.length} items registered`;
 
-  document.getElementById("listBody").innerHTML = list.map(item=>{
-    const p = item.status==="sold" ? (item.sold_price||0)-(item.cost||0) : null;
+  document.getElementById("listBody").innerHTML=list.map(item=>{
+    const p=item.status==="sold"?(item.sold_price||0)-(item.cost||0):null;
     return `<tr>
       <td colspan="6" style="padding:0;border-bottom:1px solid var(--border)">
-        <button class="row-btn" onclick="openItem('${item.id}')" style="display:flex;align-items:center;width:100%;padding:10px 8px;background:none;border:none;color:inherit;font:inherit;cursor:pointer;text-align:left;gap:0;-webkit-appearance:none;">
-          <span style="flex:2;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500;font-size:12px;padding-right:6px">${item.name}</span>
+        <button onclick="openItem('${item.id}')" style="display:flex;align-items:center;width:100%;padding:10px 8px;background:none;border:none;color:inherit;cursor:pointer;text-align:left;-webkit-appearance:none;gap:0">
+          <span style="flex:2;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:var(--font-sans);font-size:12px;font-weight:400;padding-right:8px">${item.name}</span>
           <span style="flex:1.2;white-space:nowrap"><span class="badge ${item.status}">${item.status}</span></span>
-          <span style="flex:0.8;font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);white-space:nowrap">${item.cost>0?`$${Number(item.cost).toFixed(2)}`:`—`}</span>
-          <span style="flex:0.8;font-family:'Space Mono',monospace;font-size:11px;white-space:nowrap">${item.status==="sold"?`<span class="green">$${item.sold_price}</span>`:`<span class="muted">—</span>`}</span>
-          <span style="flex:0.9;font-family:'Space Mono',monospace;font-size:11px;white-space:nowrap">${p!==null?`<span class="${p>=0?'green':'red'}">${p>=0?"+":""}$${p.toFixed(2)}</span>`:`<span class="muted">—</span>`}</span>
-          <span style="flex:0.5;font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);white-space:nowrap">T${item.trip||1}</span>
+          <span style="flex:0.8;font-family:var(--font-mono);font-size:11px;color:var(--muted);white-space:nowrap">${item.cost>0?`$${Number(item.cost).toFixed(2)}`:`—`}</span>
+          <span style="flex:0.8;font-family:var(--font-mono);font-size:11px;white-space:nowrap">${item.status==="sold"?`<span class="green">$${item.sold_price}</span>`:`<span class="muted">—</span>`}</span>
+          <span style="flex:0.9;font-family:var(--font-mono);font-size:11px;white-space:nowrap">${p!==null?`<span class="${p>=0?'green':'red'}">${p>=0?"+":""}$${p.toFixed(2)}</span>`:`<span class="muted">—</span>`}</span>
+          <span style="flex:0.5;font-family:var(--font-mono);font-size:11px;color:var(--muted);white-space:nowrap">T${item.trip||1}</span>
         </button>
       </td>
     </tr>`;
   }).join("");
 }
 
-function setView(v, btn) {
-  currentView = v;
+function setView(v,btn) {
+  currentView=v;
   document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
   btn.classList.add("active");
-  document.getElementById("chatView").style.display = v==="chat"?"flex":"none";
-  document.getElementById("listView").style.display = v==="list"?"flex":"none";
-  document.getElementById("analyticsView").style.display = v==="analytics"?"flex":"none";
+  document.getElementById("chatView").style.display=v==="chat"?"flex":"none";
+  document.getElementById("listView").style.display=v==="list"?"flex":"none";
+  document.getElementById("analyticsView").style.display=v==="analytics"?"flex":"none";
   if(v==="list") renderList();
   if(v==="analytics") renderAnalytics();
 }
 
 function openItem(id) {
-  const item = items.find(i=>String(i.id)===String(id));
+  const item=items.find(i=>String(i.id)===String(id));
   if(!item) return;
-  editingItemId = id;
-  document.getElementById("modalName").textContent = item.name;
-  document.getElementById("modalSku").textContent = item.sku||genSku(item.trip,item.trip_city);
-  document.getElementById("mCost").value = item.cost||'';
-  document.getElementById("mSoldPrice").value = item.sold_price||'';
-  document.getElementById("mMeasurements").value = item.measurements||'';
-  document.getElementById("mNotes").value = item.notes||'';
-  document.getElementById("mDepopLink").value = item.depop_link||'';
-  document.getElementById("mCategory").value = item.category||'';
-  document.getElementById("mTier").value = item.tier||'1';
+  editingItemId=id;
+  document.getElementById("modalName").textContent=item.name;
+  document.getElementById("modalSku").textContent=item.sku||genSku(item.trip,item.trip_city);
+  document.getElementById("mCost").value=item.cost||'';
+  document.getElementById("mSoldPrice").value=item.sold_price||'';
+  document.getElementById("mMeasurements").value=item.measurements||'';
+  document.getElementById("mNotes").value=item.notes||'';
+  document.getElementById("mDepopLink").value=item.depop_link||'';
+  document.getElementById("mCategory").value=item.category||'';
+  document.getElementById("mTier").value=item.tier||'1';
 
-  document.getElementById("statusGrid").innerHTML = STATUSES.map(s=>
+  document.getElementById("statusGrid").innerHTML=STATUSES.map(s=>
     `<div class="status-chip ${item.status===s?'active':''}" data-status="${s}">${s}</div>`
   ).join('');
   document.querySelectorAll(".status-chip").forEach(c=>{
@@ -372,8 +737,8 @@ function openItem(id) {
     });
   });
 
-  const activePlats = item.platforms||[];
-  document.getElementById("platformGrid").innerHTML = PLATFORMS.map(p=>
+  const activePlats=item.platforms||[];
+  document.getElementById("platformGrid").innerHTML=PLATFORMS.map(p=>
     `<div class="platform-chip ${activePlats.includes(p)?'active':''}" data-plat="${p}">${p}</div>`
   ).join('');
   document.querySelectorAll(".platform-chip").forEach(c=>{
@@ -385,34 +750,34 @@ function openItem(id) {
 
 function closeModal() {
   document.getElementById("modalOverlay").classList.add("hidden");
-  editingItemId = null;
+  editingItemId=null;
 }
 
-document.getElementById("modalOverlay").addEventListener("click", e=>{
+document.getElementById("modalOverlay").addEventListener("click",e=>{
   if(e.target===document.getElementById("modalOverlay")) closeModal();
 });
 
 async function saveItem() {
-  const item = items.find(i=>String(i.id)===String(editingItemId));
+  const item=items.find(i=>String(i.id)===String(editingItemId));
   if(!item) return;
-  const newStatus = document.querySelector(".status-chip.active")?.dataset.status||item.status;
-  const platforms = [...document.querySelectorAll(".platform-chip.active")].map(c=>c.dataset.plat);
-  const updates = {
-    status: newStatus,
-    cost: parseFloat(document.getElementById("mCost").value)||item.cost||0,
-    sold_price: parseFloat(document.getElementById("mSoldPrice").value)||item.sold_price||0,
-    measurements: document.getElementById("mMeasurements").value,
-    notes: document.getElementById("mNotes").value,
-    depop_link: document.getElementById("mDepopLink").value,
-    category: document.getElementById("mCategory").value,
-    tier: document.getElementById("mTier").value,
+  const newStatus=document.querySelector(".status-chip.active")?.dataset.status||item.status;
+  const platforms=[...document.querySelectorAll(".platform-chip.active")].map(c=>c.dataset.plat);
+  const updates={
+    status:newStatus,
+    cost:parseFloat(document.getElementById("mCost").value)||item.cost||0,
+    sold_price:parseFloat(document.getElementById("mSoldPrice").value)||item.sold_price||0,
+    measurements:document.getElementById("mMeasurements").value,
+    notes:document.getElementById("mNotes").value,
+    depop_link:document.getElementById("mDepopLink").value,
+    category:document.getElementById("mCategory").value,
+    tier:document.getElementById("mTier").value,
     platforms,
-    sku: document.getElementById("modalSku").textContent
+    sku:document.getElementById("modalSku").textContent
   };
-  Object.assign(item, updates);
-  try {
+  Object.assign(item,updates);
+  try{
     await fetch(FN_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({actions:{action:"update",id:item.id,...updates}})});
-  } catch(e){}
+  }catch(e){}
   closeModal();
   renderStats();
   if(currentView==="list") renderList();
@@ -420,41 +785,39 @@ async function saveItem() {
 }
 
 async function deleteItem() {
-  if(!confirm("Delete this item?")) return;
-  items = items.filter(i=>String(i.id)!==String(editingItemId));
-  try {
+  if(!confirm("Remove this piece from the registry?")) return;
+  items=items.filter(i=>String(i.id)!==String(editingItemId));
+  try{
     await fetch(FN_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({actions:{action:"delete",id:editingItemId}})});
-  } catch(e){}
-  closeModal();
-  renderStats();
-  renderList();
+  }catch(e){}
+  closeModal();renderStats();renderList();
 }
 
 function renderAnalytics() {
-  const {sold,posted,pipeline,revenue,profit,str} = getStats();
-  const trips = {};
+  const {sold,posted,pipeline,revenue,profit,str}=getStats();
+  const trips={};
   items.forEach(i=>{
-    const t = i.trip||1;
+    const t=i.trip||1;
     if(!trips[t]) trips[t]={revenue:0,sold:0,total:0,city:i.trip_city||''};
     trips[t].total++;
     if(i.status==="sold"){trips[t].revenue+=(i.sold_price||0);trips[t].sold++;}
   });
-  const tripKeys = Object.keys(trips).sort((a,b)=>a-b);
-  const maxRev = Math.max(...tripKeys.map(k=>trips[k].revenue),1);
-  const cats = {};
+  const tripKeys=Object.keys(trips).sort((a,b)=>a-b);
+  const maxRev=Math.max(...tripKeys.map(k=>trips[k].revenue),1);
+  const cats={};
   items.forEach(i=>{
-    const c = i.category||'Uncategorized';
+    const c=i.category||'Uncategorized';
     if(!cats[c]) cats[c]={total:0,sold:0,revenue:0};
     cats[c].total++;
     if(i.status==="sold"){cats[c].sold++;cats[c].revenue+=(i.sold_price||0);}
   });
-  const catKeys = Object.keys(cats).sort((a,b)=>cats[b].revenue-cats[a].revenue);
-  const suggestions = items.filter(i=>["unposted","photographed"].includes(i.status)).slice(0,3);
+  const catKeys=Object.keys(cats).sort((a,b)=>cats[b].revenue-cats[a].revenue);
+  const suggestions=items.filter(i=>["unposted","photographed"].includes(i.status)).slice(0,3);
 
-  document.getElementById("analyticsWrap").innerHTML = `
-    <div style="padding-bottom:20px">
+  document.getElementById("analyticsWrap").innerHTML=`
+    <div style="padding-bottom:24px">
       <div class="section-title">Overview</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px">
         <div class="metric-card">
           <div class="metric-card-title">Total Profit</div>
           <div class="metric-big" style="color:${profit>=0?'var(--green)':'var(--red)'}">${profit>=0?"+":""}$${profit.toFixed(0)}</div>
@@ -466,52 +829,55 @@ function renderAnalytics() {
           <div class="metric-sub">${sold.length} of ${items.length} sold</div>
         </div>
         <div class="metric-card">
-          <div class="metric-card-title">Avg Profit/Sale</div>
+          <div class="metric-card-title">Avg Profit / Sale</div>
           <div class="metric-big">$${sold.length>0?(profit/sold.length).toFixed(0):0}</div>
-          <div class="metric-sub">per sold item</div>
+          <div class="metric-sub">per sold piece</div>
         </div>
         <div class="metric-card">
           <div class="metric-card-title">Pipeline</div>
           <div class="metric-big" style="color:var(--blue)">${pipeline.length}</div>
-          <div class="metric-sub">need listing</div>
+          <div class="metric-sub">pieces need listing</div>
         </div>
       </div>
+
       <div class="section-title">Post Next</div>
-      ${suggestions.length ? suggestions.map(i=>`
+      ${suggestions.length?suggestions.map(i=>`
         <div class="suggest-card">
-          <div style="font-weight:600;font-size:13px">${i.name}</div>
-          <div class="suggest-reason">${i.category||'No category'} · Cost: $${i.cost||0}${i.tier==2?' · TIER 2 ARCHIVE':''}</div>
-        </div>`).join('') : '<div class="muted" style="font-size:12px;padding:8px 0">No pipeline items.</div>'}
-      <div class="section-title" style="margin-top:16px">By Trip</div>
+          <div class="suggest-name">${i.name}</div>
+          <div class="suggest-reason">${i.category||'No category'} &nbsp;·&nbsp; Cost $${i.cost||0}${i.tier==2?' &nbsp;·&nbsp; Tier 2 Archive':''}</div>
+        </div>`).join(''):'<div style="font-family:var(--font-mono);font-size:10px;color:var(--muted);padding:8px 0;letter-spacing:1px">No pipeline items.</div>'}
+
+      <div class="section-title" style="margin-top:20px">By Trip</div>
       ${tripKeys.map(k=>{
-        const t = trips[k];
-        const w = Math.round((t.revenue/maxRev)*100);
+        const t=trips[k];
+        const w=Math.round((t.revenue/maxRev)*100);
         return `<div class="trip-row">
           <div style="flex:1">
-            <div style="font-weight:600;font-size:13px">Trip ${k}${t.city?' — '+t.city:''}</div>
+            <div style="font-family:var(--font-sans);font-size:12px;font-weight:400">Trip ${k}${t.city?' — '+t.city:''}</div>
             <div class="trip-bar-wrap"><div class="trip-bar" style="width:${w}%"></div></div>
           </div>
-          <div style="text-align:right;margin-left:12px">
-            <div class="green" style="font-size:13px">$${t.revenue.toFixed(0)}</div>
-            <div class="muted" style="font-size:10px">${t.sold}/${t.total} sold</div>
+          <div style="text-align:right;margin-left:16px">
+            <div class="green" style="font-family:var(--font-mono);font-size:12px">$${t.revenue.toFixed(0)}</div>
+            <div style="font-family:var(--font-mono);font-size:9px;color:var(--muted)">${t.sold}/${t.total} sold</div>
           </div>
         </div>`;
       }).join('')}
-      <div class="section-title" style="margin-top:16px">By Category</div>
+
+      <div class="section-title" style="margin-top:20px">By Category</div>
       ${catKeys.map(c=>{
-        const d = cats[c];
-        const s2 = d.total>0?Math.round((d.sold/d.total)*100):0;
+        const d=cats[c];
+        const s2=d.total>0?Math.round((d.sold/d.total)*100):0;
         return `<div class="cat-row">
-          <div><span style="font-weight:500">${c}</span><span class="muted" style="margin-left:6px;font-size:10px">${d.total} items</span></div>
-          <div style="text-align:right"><span class="green">$${d.revenue.toFixed(0)}</span><span class="muted" style="margin-left:8px;font-size:10px">${s2}% STR</span></div>
+          <div><span style="font-family:var(--font-sans);font-size:12px">${c}</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--muted);margin-left:8px">${d.total} pieces</span></div>
+          <div style="text-align:right"><span class="green" style="font-family:var(--font-mono);font-size:11px">$${d.revenue.toFixed(0)}</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--muted);margin-left:10px">${s2}% STR</span></div>
         </div>`;
       }).join('')}
     </div>`;
 }
 
 function buildSystemPrompt() {
-  const {sold,posted,pipeline,revenue,profit,str} = getStats();
-  const list = items.map(i=>`[ID:${i.id}] "${i.name}" | ${i.status} | cost:$${Number(i.cost||0).toFixed(2)} | sold:$${i.sold_price||0} | cat:${i.category||'?'} | tier:${i.tier||1} | trip:${i.trip}`).join("\n");
+  const {sold,posted,pipeline,revenue,profit,str}=getStats();
+  const list=items.map(i=>`[ID:${i.id}] "${i.name}" | ${i.status} | cost:$${Number(i.cost||0).toFixed(2)} | sold:$${i.sold_price||0} | cat:${i.category||'?'} | tier:${i.tier||1} | trip:${i.trip}`).join("\n");
   return `You are the AI ops manager for FURUGI, Dee's vintage resale operation. Speak direct, casual, no fluff.
 
 STATS: Pipeline:${pipeline.length} | Live:${posted.length} | Sold:${sold.length} | Spent:$${totalSpend} | Revenue:$${revenue.toFixed(0)} | Profit:${profit>=0?"+":""}$${profit.toFixed(0)} | STR:${str}%
@@ -534,51 +900,48 @@ RULES: Match items fuzzy by name. "grabbed X,Y,Z for $40" = add items + addspend
 }
 
 async function send() {
-  const input = document.getElementById("msgInput");
-  const text = input.value.trim();
+  const input=document.getElementById("msgInput");
+  const text=input.value.trim();
   if(!text) return;
-  input.value = "";
+  input.value="";
   msgs.push({role:"user",text});
-  // Save user message to Supabase
   fetch(FN_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({saveMessage:{role:"user",content:text}})}).catch(()=>{});
-  const wrap = document.getElementById("chatWrap");
-  wrap.innerHTML = msgs.map(m=>`<div class="bubble ${m.role}">${m.text.replace(/\n/g,'<br>')}</div>`).join("") + `<div class="typing">···</div>`;
-  wrap.scrollTop = wrap.scrollHeight;
-  try {
-    const res = await fetch(FN_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({system:buildSystemPrompt(),messages:msgs.slice(-10).map(m=>({role:m.role==="ai"?"assistant":"user",content:m.text}))})});
-    const data = await res.json();
-    const raw = data.content?.[0]?.text||"";
-    const jm = raw.match(/(\[[\s\S]*?\]|\{[\s\S]*?\})\s*$/);
-    const replyText = raw.replace(/(\[[\s\S]*?\]|\{[\s\S]*?\})\s*$/,"").trim();
+  const wrap=document.getElementById("chatWrap");
+  wrap.innerHTML=msgs.map(m=>`<div class="bubble ${m.role}">${m.text.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</div>`).join("")+`<div class="typing">···</div>`;
+  wrap.scrollTop=wrap.scrollHeight;
+  try{
+    const res=await fetch(FN_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({system:buildSystemPrompt(),messages:msgs.slice(-10).map(m=>({role:m.role==="ai"?"assistant":"user",content:m.text}))})});
+    const data=await res.json();
+    const raw=data.content?.[0]?.text||"";
+    const jm=raw.match(/(\[[\s\S]*?\]|\{[\s\S]*?\})\s*$/);
+    const replyText=raw.replace(/(\[[\s\S]*?\]|\{[\s\S]*?\})\s*$/,"").trim();
     if(jm){
       try{
-        const actions = JSON.parse(jm[0]);
+        const actions=JSON.parse(jm[0]);
         if(Object.keys(actions).length>0||Array.isArray(actions)){
           await fetch(FN_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({actions})}).catch(()=>{});
           applyActionsLocally(actions);
         }
       }catch(e){}
     }
-    const aiText = replyText||"Done.";
+    const aiText=replyText||"Done.";
     msgs.push({role:"ai",text:aiText});
-    // Save AI message to Supabase
     fetch(FN_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({saveMessage:{role:"assistant",content:aiText}})}).catch(()=>{});
-  } catch(e){msgs.push({role:"ai",text:"Something went wrong, try again."});}
-  renderStats();
-  renderChat();
+  }catch(e){msgs.push({role:"ai",text:"Something went wrong, try again."});}
+  renderStats();renderChat();
 }
 
 function quickSend(text){document.getElementById("msgInput").value=text;send();}
 
-function applyActionsLocally(raw) {
-  const arr = Array.isArray(raw)?raw:[raw];
+function applyActionsLocally(raw){
+  const arr=Array.isArray(raw)?raw:[raw];
   arr.forEach(a=>{
     if(!a?.action) return;
     if(a.action==="sold") items=items.map(i=>i.id===a.id?{...i,status:"sold",sold_price:parseFloat(a.soldPrice)||0}:i);
     else if(a.action==="posted") items=items.map(i=>i.id===a.id?{...i,status:"posted"}:i);
     else if(a.action==="unposted") items=items.map(i=>i.id===a.id?{...i,status:"unposted"}:i);
     else if(a.action==="add"){
-      const sku = genSku(a.trip||1, a.city||'NO');
+      const sku=genSku(a.trip||1,a.city||'NO');
       items.push({id:Date.now(),name:a.name,status:a.status||"unposted",cost:parseFloat(a.cost)||0,sold_price:parseFloat(a.soldPrice)||0,trip:a.trip||1,category:a.category||"",tier:a.tier||1,sku});
     }
     else if(a.action==="spend") totalSpend=parseFloat(a.amount)||totalSpend;
