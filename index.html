@@ -39,18 +39,14 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
 .qa-btn{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:20px;padding:5px 12px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;flex-shrink:0}
 .list-wrap{flex:1;overflow-y:auto;padding:0 14px 12px;scrollbar-width:none}
 .list-wrap::-webkit-scrollbar{display:none}
-.controls{display:flex;gap:6px;padding:10px 0;position:sticky;top:0;background:var(--bg);z-index:10}
+.controls{display:flex;gap:6px;padding:10px 0}
 .controls input,.controls select{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px 10px;font-size:12px;outline:none;font-family:'DM Sans',sans-serif}
 .controls input{flex:1;min-width:0}
 .count-label{font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;padding-bottom:6px}
 table{width:100%;border-collapse:collapse;font-size:12px}
-th{text-align:left;font-size:8px;color:var(--muted);padding:6px 8px;border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:1.5px;font-family:'Space Mono',monospace;white-space:nowrap;position:sticky;top:0;background:var(--bg)}
-/* tappable rows via position:relative + ::after overlay */
-tbody tr{position:relative;cursor:pointer}
-tbody tr:active td{background:#1c1c1c}
+th{text-align:left;font-size:8px;color:var(--muted);padding:6px 8px;border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:1.5px;font-family:'Space Mono',monospace;white-space:nowrap}
 tbody tr td{padding:10px 8px;border-bottom:1px solid var(--border);vertical-align:middle}
-/* full-row tap target */
-tbody tr td:first-child::before{content:'';position:absolute;inset:0;z-index:1}
+
 .badge{display:inline-block;padding:2px 6px;border-radius:4px;font-size:9px;font-weight:700;letter-spacing:.5px;font-family:'Space Mono',monospace}
 .badge.sold{background:#3ecf6e18;color:var(--green);border:1px solid #3ecf6e33}
 .badge.posted{background:#e8a83818;color:var(--yellow);border:1px solid #e8a83833}
