@@ -121,6 +121,7 @@ textarea.field-input{resize:vertical;min-height:60px}
       <button class="qa-btn" onclick="quickSend('Give me a profit summary by trip')">📊 Trip ROI</button>
       <button class="qa-btn" onclick="quickSend('Which categories sell fastest?')">🔥 Hot Categories</button>
       <button class="qa-btn" onclick="quickSend('What is my sell-through rate?')">📈 Sell-Through</button>
+      <button class="qa-btn" onclick="clearChat()" style="color:#e74c3c;border-color:#e74c3c33">🗑 Clear Chat</button>
     </div>
     <div class="chat-wrap" id="chatWrap"></div>
     <div class="input-row">
@@ -264,6 +265,9 @@ async function loadData() {
     const r = await fetch(FN_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({loadData:true})});
     const d = await r.json();
     if(d.items){items=d.items;totalSpend=d.totalSpend||814;}
+    if(d.messages && d.messages.length>0){
+      msgs = d.messages.map(m=>({role:m.role==="assistant"?"ai":m.role, text:m.content}));
+    }
   } catch(e){console.error(e);}
   renderStats();
   renderChat();
@@ -290,6 +294,13 @@ function renderStats() {
     <div class="stat"><div class="stat-label">Profit</div><div class="stat-val" style="color:${profit>=0?'var(--green)':'var(--red)'}">${profit>=0?"+":""}$${profit.toFixed(0)}</div></div>
     <div class="stat"><div class="stat-label">STR</div><div class="stat-val">${str}%</div></div>
   `;
+}
+
+async function clearChat() {
+  if(!confirm("Clear chat history?")) return;
+  msgs = [{role:"ai",text:"What's good Dee. Talk to me — what sold, what you picking up, what needs to get posted?"}];
+  fetch(FN_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({clearChat:true})}).catch(()=>{});
+  renderChat();
 }
 
 function renderChat() {
@@ -528,6 +539,8 @@ async function send() {
   if(!text) return;
   input.value = "";
   msgs.push({role:"user",text});
+  // Save user message to Supabase
+  fetch(FN_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({saveMessage:{role:"user",content:text}})}).catch(()=>{});
   const wrap = document.getElementById("chatWrap");
   wrap.innerHTML = msgs.map(m=>`<div class="bubble ${m.role}">${m.text.replace(/\n/g,'<br>')}</div>`).join("") + `<div class="typing">···</div>`;
   wrap.scrollTop = wrap.scrollHeight;
@@ -546,7 +559,10 @@ async function send() {
         }
       }catch(e){}
     }
-    msgs.push({role:"ai",text:replyText||"Done."});
+    const aiText = replyText||"Done.";
+    msgs.push({role:"ai",text:aiText});
+    // Save AI message to Supabase
+    fetch(FN_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({saveMessage:{role:"assistant",content:aiText}})}).catch(()=>{});
   } catch(e){msgs.push({role:"ai",text:"Something went wrong, try again."});}
   renderStats();
   renderChat();
