@@ -742,7 +742,7 @@ async function saveItem() {
 
   const updates={
     status:newStatus,
-    cost:document.getElementById("mCost").value!==''?parseFloat(document.getElementById("mCost").value)||item.cost||0,
+    cost:document.getElementById("mCost").value!==''?parseFloat(document.getElementById("mCost").value):item.cost||0,
     sold_price:parseFloat(document.getElementById("mSoldPrice").value)||item.sold_price||0,
     measurements:document.getElementById("mMeasurements").value,
     notes:document.getElementById("mNotes").value,
