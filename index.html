@@ -379,10 +379,9 @@ textarea.field-input{resize:vertical;min-height:60px}
         <select class="field-input" id="mCategory">
           <option value="">—</option>
           <option>Tee</option><option>Hoodie</option><option>Jacket</option>
-          <option>Flannel</option><option>Rugby</option><option>Workwear</option>
-          <option>Denim</option><option>Pants</option><option>Shoes</option>
-          <option>Hat</option><option>Bag</option><option>Vest</option>
-          <option>Crewneck</option><option>Polo</option><option>Military</option><option>Other</option>
+          <option>Shirts</option><option>Denim</option><option>Pants</option><option>Shoes</option>
+          <option>Hat</option><option>Bag</option>
+          <option>Crewneck</option><option>Polo</option><option>Other</option>
         </select>
       </div>
       <div class="field-group">
@@ -425,11 +424,11 @@ const STORAGE_URL = `${SUPABASE_URL}/storage/v1/object/public/item-images/`;
 const STORAGE_UPLOAD_URL = `${SUPABASE_URL}/storage/v1/object/item-images/`;
 
 const STATUSES = ['sourced','cleaned','photographed','unposted','posted','sold','shipped','kept'];
-const PLATFORMS = ['Depop','Grailed','eBay','Mercari','Poshmark'];
+const PLATFORMS = ['Depop','Grailed','eBay','Poshmark'];
 
 let items = [];
 let totalSpend = 814;
-let msgs = [{role:"ai",text:"What's good Dee. Talk to me — what sold, what you picking up, what needs to get posted?"}];
+let msgs = [{role:"ai",text:"Wazzam Munny. Holla at me — what sold, what you picking up, what needs to get posted?"}];
 let currentView = "chat";
 let editingItemId = null;
 let qaImageFile = null;
