@@ -552,11 +552,13 @@ let list=items.filter(i=>{
     const p=item.status==="sold"?(item.sold_price||0)-(item.cost||0):null;
     const hasImg=item.image_url?`<img src="${item.image_url}" style="width:28px;height:28px;object-fit:cover;border-radius:1px;margin-right:8px;flex-shrink:0;opacity:0.8" />`:'';
     return `<tr><td colspan="6" style="padding:0">
-      <button class="row-btn" onclick="openItem('${item.id}')" style="display:grid;grid-template-columns:1fr 64px 44px 36px 52px 24px;align-items:center;gap:4px;padding:12px 8px;">
-        ${hasImg}
-        <span style="min-width:0;overflow:hidden;">
+     <button class="row-btn" onclick="openItem('${item.id}')" style="display:grid;grid-template-columns:1fr 64px 44px 36px 52px 24px;align-items:center;gap:4px;padding:12px 8px;">
+        <span style="min-width:0;overflow:hidden;display:flex;align-items:center;gap:6px;">
+          ${hasImg}
+          <span style="min-width:0;overflow:hidden;">
           <span style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12px;font-weight:400;">${item.name}</span>
           ${item.category?`<span style="display:block;font-family:var(--font-mono);font-size:9px;color:var(--muted);letter-spacing:1px;">${item.category}</span>`:''}
+          </span>
         </span>
         <span style="white-space:nowrap;"><span class="badge ${item.status}">${item.status}</span></span>
         <span style="font-family:var(--font-mono);font-size:10px;color:var(--muted);white-space:nowrap;">${item.cost>0?`$${Number(item.cost).toFixed(0)}`:`—`}</span>
