@@ -439,7 +439,6 @@ let detailImageFile = null;
 const now = new Date();
 const dateStr = `${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')}.${String(now.getFullYear()).slice(2)}`;
 document.getElementById("todayDate").textContent = dateStr;
-document.getElementById("logoDate").textContent = dateStr;
 
 function genSku(trip, city) {
   const d = new Date();
