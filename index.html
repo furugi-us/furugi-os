@@ -753,12 +753,12 @@ async function saveItem() {
     image_url
   };
   Object.assign(item,updates);
+  closeModal();
+  renderStats();
+  renderList();
   try{
     await fetch(FN_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({actions:{action:"update",id:item.id,...updates}})});
   }catch(e){}
-  closeModal();
-  renderStats();
-  if(currentView==="list") renderList();
   if(currentView==="analytics") renderAnalytics();
 }
 
