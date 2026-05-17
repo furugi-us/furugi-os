@@ -313,11 +313,12 @@ textarea.field-input{resize:vertical;min-height:60px}
     <!-- Image capture -->
     <div class="field-group">
       <div class="field-label">Photo</div>
-      <div class="img-upload-area" id="qaImgArea" onclick="document.getElementById('qaImgInput').click()">
+      <div class="img-upload-area" id="qaImgArea" onclick="showImageChoice('qa')">
         <span class="img-upload-icon">📷</span>
         <span class="img-upload-label">Tap to shoot or upload</span>
       </div>
       <input type="file" id="qaImgInput" accept="image/*" style="display:none" onchange="handleQuickAddImage(this)">
+<input type="file" id="qaImgInputCamera" accept="image/*" capture="environment" style="display:none" onchange="handleQuickAddImage(this)">
     </div>
 
     <div class="field-group">
@@ -352,11 +353,12 @@ textarea.field-input{resize:vertical;min-height:60px}
     <!-- Image -->
     <div class="field-group">
       <div class="field-label">Photo</div>
-      <div class="img-upload-area" id="detailImgArea" onclick="document.getElementById('detailImgInput').click()">
+      <div class="img-upload-area" id="detailImgArea" onclick="showImageChoice('detail')">
         <span class="img-upload-icon" id="detailImgIcon">📷</span>
         <span class="img-upload-label" id="detailImgLabel">Tap to add photo</span>
       </div>
       <input type="file" id="detailImgInput" accept="image/*" style="display:none" onchange="handleDetailImage(this)">
+<input type="file" id="detailImgInputCamera" accept="image/*" capture="environment" style="display:none" onchange="handleDetailImage(this)">
     </div>
 
     <div class="field-group">
@@ -837,7 +839,19 @@ async function send() {
   }catch(e){msgs.push({role:"ai",text:"Something went wrong, try again."});}
   renderStats();renderChat();
 }
-
+function showImageChoice(target) {
+  const inputId = target==='qa' ? 'qaImgInput' : 'detailImgInput';
+  const choice = document.createElement('div');
+  choice.style.cssText = 'position:fixed;inset:0;background:#000a;z-index:200;display:flex;align-items:flex-end';
+  choice.innerHTML = `
+    <div style="width:100%;background:var(--surface);border-top:1px solid var(--border2);padding:16px;padding-bottom:max(16px,env(safe-area-inset-bottom))">
+      <div style="font-family:var(--font-mono);font-size:8px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px">Add Photo</div>
+      <button onclick="this.closest('div[style*=fixed]').remove();document.getElementById('${inputId}Camera').click()" style="display:block;width:100%;padding:13px;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:var(--font-mono);font-size:11px;letter-spacing:1px;text-transform:uppercase;border-radius:2px;cursor:pointer;margin-bottom:8px">Take Photo</button>
+      <button onclick="this.closest('div[style*=fixed]').remove();document.getElementById('${inputId}').click()" style="display:block;width:100%;padding:13px;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:var(--font-mono);font-size:11px;letter-spacing:1px;text-transform:uppercase;border-radius:2px;cursor:pointer;margin-bottom:8px">Choose from Library</button>
+      <button onclick="this.closest('div[style*=fixed]').remove()" style="display:block;width:100%;padding:13px;background:none;border:none;color:var(--muted);font-family:var(--font-mono);font-size:11px;letter-spacing:1px;cursor:pointer">Cancel</button>
+    </div>`;
+  document.body.appendChild(choice);
+}
 function quickSend(text){document.getElementById("msgInput").value=text;send();}
 
 function applyActionsLocally(raw){
