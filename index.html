@@ -644,7 +644,15 @@ async function saveQuickAdd() {
 
   let image_url=null;
   if(qaImageFile){
-    image_url=await uploadImage(qaImageFile, `qa-${id}`);
+    try{
+      image_url=await Promise.race([
+        uploadImage(qaImageFile,`qa-${id}`),
+        new Promise((_,reject)=>setTimeout(()=>reject(new Error("timeout")),8000))
+      ]);
+    }catch(e){
+      console.error("Image upload failed:",e);
+      image_url=null;
+    }
   }
 
   const newItem={id,name,status:"unposted",cost,sold_price:0,trip,sku,image_url,category:"",tier:1};
@@ -747,7 +755,15 @@ async function saveItem() {
 
   let image_url=item.image_url||null;
   if(detailImageFile){
-    image_url=await uploadImage(detailImageFile,`item-${item.id}`);
+    try{
+      image_url=await Promise.race([
+        uploadImage(detailImageFile,`item-${item.id}`),
+        new Promise((_,reject)=>setTimeout(()=>reject(new Error("timeout")),8000))
+      ]);
+    }catch(e){
+      console.error("Image upload failed:",e);
+      image_url=item.image_url||null;
+    }
   }
 
   const updates={
