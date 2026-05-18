@@ -845,7 +845,57 @@ function renderAnalytics() {
       <div class="section-title" style="margin-top:20px">By Trip</div>
       ${tripKeys.map(k=>{const t=trips[k];const w=Math.round((t.revenue/maxRev)*100);return`<div class="trip-row"><div style="flex:1"><div style="font-size:12px">Trip ${k}${t.city?' — '+t.city:''}</div><div class="trip-bar-wrap"><div class="trip-bar" style="width:${w}%"></div></div></div><div style="text-align:right;margin-left:16px"><div class="green" style="font-family:var(--font-mono);font-size:12px">$${t.revenue.toFixed(0)}</div><div style="font-family:var(--font-mono);font-size:9px;color:var(--muted)">${t.sold}/${t.total} sold</div></div></div>`;}).join('')}
       <div class="section-title" style="margin-top:20px">By Category</div>
-      ${catKeys.map(c=>{const d=cats[c];const s2=d.total>0?Math.round((d.sold/d.total)*100):0;return`<div class="cat-row"><div><span style="font-size:12px">${c}</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--muted);margin-left:8px">${d.total} pieces</span></div><div style="text-align:right"><span class="green" style="font-family:var(--font-mono);font-size:11px">$${d.revenue.toFixed(0)}</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--muted);margin-left:10px">${s2}% STR</span></div></div>`;}).join('')}
+      <div style="display:grid;grid-template-columns:1fr 48px 48px 52px;gap:4px;padding:4px 0 6px;border-bottom:1px solid var(--border);margin-bottom:2px;">
+        <span style="font-family:var(--font-mono);font-size:7px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;">Category</span>
+        <span style="font-family:var(--font-mono);font-size:7px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;text-align:right;">Rev</span>
+        <span style="font-family:var(--font-mono);font-size:7px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;text-align:right;">STR</span>
+        <span style="font-family:var(--font-mono);font-size:7px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;text-align:right;">ROI</span>
+      </div>
+      ${catKeys.map(c=>{
+        const d=cats[c];
+        const s2=d.total>0?Math.round((d.sold/d.total)*100):0;
+        const soldItems=items.filter(i=>i.status==="sold"&&(i.category||"Uncategorized")===c);
+        const totalCost=soldItems.reduce((s,i)=>s+(i.cost||0),0);
+        const roi=totalCost>0?Math.round(((d.revenue-totalCost)/totalCost)*100):0;
+        const roiColor=roi>=200?'var(--green)':roi>=100?'var(--yellow)':'var(--muted)';
+        return`<div class="cat-row" style="display:grid;grid-template-columns:1fr 48px 48px 52px;gap:4px;">
+          <div>
+            <span style="font-size:12px;">${c}</span>
+            <span style="font-family:var(--font-mono);font-size:9px;color:var(--muted);margin-left:6px;">${d.total} pcs</span>
+          </div>
+          <span style="font-family:var(--font-mono);font-size:11px;color:var(--green);text-align:right;">$${d.revenue.toFixed(0)}</span>
+          <span style="font-family:var(--font-mono);font-size:11px;color:var(--muted);text-align:right;">${s2}%</span>
+          <span style="font-family:var(--font-mono);font-size:11px;color:${roiColor};text-align:right;">${roi>0?'+':''}${roi}%</span>
+        </div>`;
+      }).join('')}
+
+      <div class="section-title" style="margin-top:24px">Margin Calculator</div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:2px;padding:14px;">
+        <div class="two-col" style="margin-bottom:12px;">
+          <div class="field-group" style="margin-bottom:0;">
+            <div class="field-label">Cost</div>
+            <input type="number" inputmode="decimal" class="field-input" id="calcCost" placeholder="0.00" oninput="calcMargin()">
+          </div>
+          <div class="field-group" style="margin-bottom:0;">
+            <div class="field-label">Sell Price</div>
+            <input type="number" inputmode="decimal" class="field-input" id="calcSell" placeholder="0.00" oninput="calcMargin()">
+          </div>
+        </div>
+        <div id="calcResult" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:4px;">
+          <div style="text-align:center;padding:10px;background:var(--surface2);border:1px solid var(--border);border-radius:2px;">
+            <div style="font-family:var(--font-mono);font-size:7px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">Profit</div>
+            <div id="calcProfit" style="font-family:var(--font-serif);font-size:20px;font-weight:600;color:var(--green);">—</div>
+          </div>
+          <div style="text-align:center;padding:10px;background:var(--surface2);border:1px solid var(--border);border-radius:2px;">
+            <div style="font-family:var(--font-mono);font-size:7px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">Margin</div>
+            <div id="calcMarginPct" style="font-family:var(--font-serif);font-size:20px;font-weight:600;color:var(--green);">—</div>
+          </div>
+          <div style="text-align:center;padding:10px;background:var(--surface2);border:1px solid var(--border);border-radius:2px;">
+            <div style="font-family:var(--font-mono);font-size:7px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">ROI</div>
+            <div id="calcRoi" style="font-family:var(--font-serif);font-size:20px;font-weight:600;color:var(--green);">—</div>
+          </div>
+        </div>
+      </div>
     </div>`;
 }
 
@@ -1007,6 +1057,20 @@ function previewImage(url) {
   overlay.innerHTML = `<img src="${url}" style="max-width:92vw;max-height:88dvh;object-fit:contain;border-radius:2px;" />`;
   overlay.addEventListener('click', ()=>overlay.remove());
   document.body.appendChild(overlay);
+}
+  function calcMargin() {
+  const cost=parseFloat(document.getElementById("calcCost").value)||0;
+  const sell=parseFloat(document.getElementById("calcSell").value)||0;
+  const profit=sell-cost;
+  const margin=sell>0?Math.round((profit/sell)*100):0;
+  const roi=cost>0?Math.round((profit/cost)*100):0;
+  const color=profit>=0?'var(--green)':'var(--red)';
+  document.getElementById("calcProfit").style.color=color;
+  document.getElementById("calcMarginPct").style.color=color;
+  document.getElementById("calcRoi").style.color=color;
+  document.getElementById("calcProfit").textContent=profit!==0?`${profit>=0?'+':''}$${profit.toFixed(2)}`:'—';
+  document.getElementById("calcMarginPct").textContent=sell>0?`${margin}%`:'—';
+  document.getElementById("calcRoi").textContent=cost>0?`${roi>0?'+':''}${roi}%`:'—';
 }</script>
 </body>
 </html>
