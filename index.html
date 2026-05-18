@@ -611,20 +611,26 @@ async function uploadImage(file, itemId) {
   try {
     const ext=(file.name.split('.').pop()||'jpg').toLowerCase();
     const path=`${itemId}.${ext}`;
-    // Convert file to base64 and send through edge function
-    const base64=await new Promise(res=>{
-      const reader=new FileReader();
-      reader.onload=e=>res(e.target.result.split(',')[1]);
-      reader.readAsDataURL(file);
-    });
-    const r=await fetch(FN_URL,{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({uploadImage:{path,contentType:file.type,fileData:base64}})
-    });
-    const result=await r.json();
-    console.log("Upload result:",JSON.stringify(result));
-    return result.publicUrl||null;
+    const ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp2eHpsZ3FqaHRyZHR6cWRmdGlqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcwODQ0MDUsImV4cCI6MjA2MjY2MDQwNX0.aCPBOqYGMbZhJOsHXABPmBOJLXJWVlHLWVKiDNNMfKY";
+    const uploadRes = await fetch(
+      `${SUPABASE_URL}/storage/v1/object/item-images/${path}`,
+      {
+        method:"POST",
+        headers:{
+          "Authorization":`Bearer ${ANON_KEY}`,
+          "Content-Type":file.type,
+          "x-upsert":"true"
+        },
+        body:file
+      }
+    );
+    console.log("Upload status:",uploadRes.status);
+    const resText=await uploadRes.text();
+    console.log("Upload response:",resText);
+    if(uploadRes.ok){
+      return `${SUPABASE_URL}/storage/v1/object/public/item-images/${path}`;
+    }
+    return null;
   } catch(e){console.error("Upload error",e);return null;}
 }
 
