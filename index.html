@@ -369,6 +369,10 @@ textarea.field-input{resize:vertical;min-height:60px}
     <div class="modal-label">Garment Record</div>
     <div class="modal-title" id="modalName"></div>
     <div class="modal-sku" id="modalSku"></div>
+    <div class="field-group">
+      <div class="field-label">Item Name</div>
+      <input type="text" class="field-input" id="mName" placeholder="Item name...">
+    </div>
 
     <!-- Image -->
     <div class="field-group">
@@ -683,6 +687,7 @@ function openItem(id) {
   detailImageFile=null;
 
   document.getElementById("modalName").textContent=item.name;
+  document.getElementById("mName").value=item.name;
   document.getElementById("modalSku").textContent=item.sku||genSku(item.trip,item.trip_city);
   document.getElementById("mCost").value=item.cost||'';
   document.getElementById("mSoldPrice").value=item.sold_price||'';
@@ -773,6 +778,7 @@ async function saveItem() {
   }
 
   const updates={
+    name:document.getElementById("mName").value.trim()||item.name,
     status:newStatus,
     cost:document.getElementById("mCost").value!==''?parseFloat(document.getElementById("mCost").value):item.cost||0,
     sold_price:parseFloat(document.getElementById("mSoldPrice").value)||item.sold_price||0,
@@ -785,6 +791,7 @@ async function saveItem() {
     image_url
   };
   Object.assign(item,updates);
+  if(updates.name) item.name=updates.name;
   closeModal();
   renderStats();
   renderList();
