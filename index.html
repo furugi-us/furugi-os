@@ -840,6 +840,34 @@ function renderAnalytics() {
         <div class="metric-card"><div class="metric-card-title">Avg Profit / Sale</div><div class="metric-big">$${sold.length>0?(profit/sold.length).toFixed(0):0}</div><div class="metric-sub">per sold piece</div></div>
         <div class="metric-card"><div class="metric-card-title">Pipeline</div><div class="metric-big" style="color:var(--blue)">${pipeline.length}</div><div class="metric-sub">pieces need listing</div></div>
       </div>
+      <div class="section-title">Margin Calculator</div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:2px;padding:14px;margin-bottom:20px;">
+        <div class="two-col" style="margin-bottom:12px;">
+          <div class="field-group" style="margin-bottom:0;">
+            <div class="field-label">Cost</div>
+            <input type="number" inputmode="decimal" class="field-input" id="calcCost" placeholder="0.00" oninput="calcMargin()">
+          </div>
+          <div class="field-group" style="margin-bottom:0;">
+            <div class="field-label">Sell Price</div>
+            <input type="number" inputmode="decimal" class="field-input" id="calcSell" placeholder="0.00" oninput="calcMargin()">
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:4px;">
+          <div style="text-align:center;padding:10px;background:var(--surface2);border:1px solid var(--border);border-radius:2px;">
+            <div style="font-family:var(--font-mono);font-size:7px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">Profit</div>
+            <div id="calcProfit" style="font-family:var(--font-serif);font-size:20px;font-weight:600;color:var(--green);">—</div>
+          </div>
+          <div style="text-align:center;padding:10px;background:var(--surface2);border:1px solid var(--border);border-radius:2px;">
+            <div style="font-family:var(--font-mono);font-size:7px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">Margin</div>
+            <div id="calcMarginPct" style="font-family:var(--font-serif);font-size:20px;font-weight:600;color:var(--green);">—</div>
+          </div>
+          <div style="text-align:center;padding:10px;background:var(--surface2);border:1px solid var(--border);border-radius:2px;">
+            <div style="font-family:var(--font-mono);font-size:7px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">ROI</div>
+            <div id="calcRoi" style="font-family:var(--font-serif);font-size:20px;font-weight:600;color:var(--green);">—</div>
+          </div>
+        </div>
+      </div>
+
       <div class="section-title">Post Next</div>
       ${suggestions.length?suggestions.map(i=>`<div class="suggest-card"><div class="suggest-name">${i.name}</div><div class="suggest-reason">${i.category||'No category'} · Cost $${i.cost||0}${i.tier==2?' · Tier 2 Archive':''}</div></div>`).join(''):'<div style="font-family:var(--font-mono);font-size:10px;color:var(--muted);padding:8px 0;letter-spacing:1px">No pipeline items.</div>'}
       <div class="section-title" style="margin-top:20px">By Trip</div>
@@ -870,11 +898,6 @@ function renderAnalytics() {
       }).join('')}
 
       <div class="section-title" style="margin-top:24px">Margin Calculator</div>
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:2px;padding:14px;">
-        <div class="two-col" style="margin-bottom:12px;">
-          <div class="field-group" style="margin-bottom:0;">
-            <div class="field-label">Cost</div>
-            <input type="number" inputmode="decimal" class="field-input" id="calcCost" placeholder="0.00" oninput="calcMargin()">
           </div>
           <div class="field-group" style="margin-bottom:0;">
             <div class="field-label">Sell Price</div>
