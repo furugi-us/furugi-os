@@ -298,10 +298,16 @@ textarea.field-input{resize:vertical;min-height:60px}
         </select>
       </div>
       <div class="count-label" id="countLabel"></div>
+      <div style="display:grid;grid-template-columns:1fr 64px 44px 36px 52px 24px;gap:4px;padding:4px 8px 6px;border-bottom:1px solid var(--border);">
+        <span style="font-family:var(--font-mono);font-size:7px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;">Item</span>
+        <span style="font-family:var(--font-mono);font-size:7px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;">Status</span>
+        <span style="font-family:var(--font-mono);font-size:7px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;">Cost</span>
+        <span style="font-family:var(--font-mono);font-size:7px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;">Sold</span>
+        <span style="font-family:var(--font-mono);font-size:7px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;">Profit</span>
+        <span style="font-family:var(--font-mono);font-size:7px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;">Trip</span>
+      </div>
       <table>
-        <thead><tr>
-          <th>Item</th><th>Status</th><th>Cost</th><th>Sold</th><th>Profit</th><th>Trip</th>
-        </tr></thead>
+        <thead style="display:none"></thead>
         <tbody id="listBody"></tbody>
       </table>
     </div>
