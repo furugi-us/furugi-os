@@ -550,7 +550,7 @@ let list=items.filter(i=>{
 
   document.getElementById("listBody").innerHTML=list.map(item=>{
     const p=item.status==="sold"?(item.sold_price||0)-(item.cost||0):null;
-    const hasImg=item.image_url?`<img src="${item.image_url}" style="width:28px;height:28px;object-fit:cover;border-radius:1px;margin-right:8px;flex-shrink:0;opacity:0.8" />`:'';
+    const hasImg=item.image_url?`<img src="${item.image_url}" onclick="event.stopPropagation();previewImage('${item.image_url}')" style="width:28px;height:28px;object-fit:cover;border-radius:1px;margin-right:8px;flex-shrink:0;opacity:0.8;cursor:zoom-in" />`:'';
     return `<tr><td colspan="6" style="padding:0">
      <button class="row-btn" onclick="openItem('${item.id}')" style="display:grid;grid-template-columns:1fr 64px 44px 36px 52px 24px;align-items:center;gap:4px;padding:12px 8px;">
         <span style="min-width:0;overflow:hidden;display:flex;align-items:center;gap:6px;">
@@ -988,6 +988,12 @@ document.getElementById("msgInput").addEventListener("keydown",e=>{
 renderChat();
 loadData().then(()=>renderList());
 document.getElementById("quickAddBtn").classList.add("visible");
-</script>
+function previewImage(url) {
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:#000000ee;z-index:300;display:flex;align-items:center;justify-content:center;cursor:zoom-out';
+  overlay.innerHTML = `<img src="${url}" style="max-width:92vw;max-height:88dvh;object-fit:contain;border-radius:2px;" />`;
+  overlay.addEventListener('click', ()=>overlay.remove());
+  document.body.appendChild(overlay);
+}</script>
 </body>
 </html>
