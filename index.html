@@ -611,7 +611,7 @@ async function uploadImage(file, itemId) {
   try {
     const ext=(file.name.split('.').pop()||'jpg').toLowerCase();
     const path=`${itemId}.${ext}`;
-    const ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp2eHpsZ3FqaHRyZHR6cWRmdGlqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcwODQ0MDUsImV4cCI6MjA2MjY2MDQwNX0.aCPBOqYGMbZhJOsHXABPmBOJLXJWVlHLWVKiDNNMfKY";
+    const ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp2eHpsZ3FqaHRyZHR6cWRmdGlqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg5MTM3MDksImV4cCI6MjA5NDQ4OTcwOX0.3C6YpOYQWSXUr9nMBhCHvPEv0Gvcyl3BFT43gx96_9M";
     const uploadRes = await fetch(
       `${SUPABASE_URL}/storage/v1/object/item-images/${path}`,
       {
