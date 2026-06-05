@@ -619,27 +619,19 @@ function handleQuickAddImage(input) {
 
 async function uploadImage(file, itemId) {
   try {
-    const ext=(file.name.split('.').pop()||'jpg').toLowerCase();
-    const path=`${itemId}.${ext}`;
-    const ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp2eHpsZ3FqaHRyZHR6cWRmdGlqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg5MTM3MDksImV4cCI6MjA5NDQ4OTcwOX0.3C6YpOYQWSXUr9nMBhCHvPEv0Gvcyl3BFT43gx96_9M";
-    const uploadRes = await fetch(
-      `${SUPABASE_URL}/storage/v1/object/item-images/${path}`,
-      {
-        method:"POST",
-        headers:{
-          "Authorization":`Bearer ${ANON_KEY}`,
-          "Content-Type":file.type,
-          "x-upsert":"true"
-        },
-        body:file
-      }
-    );
-    console.log("Upload status:",uploadRes.status);
-    const resText=await uploadRes.text();
-    console.log("Upload response:",resText);
-    if(uploadRes.ok){
-      return `${SUPABASE_URL}/storage/v1/object/public/item-images/${path}`;
-    }
+    const CLOUD_NAME = "dolombmtn";
+    const UPLOAD_PRESET = "furugi_uploads";
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", UPLOAD_PRESET);
+    formData.append("public_id", `furugi/${itemId}`);
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+      method: "POST",
+      body: formData
+    });
+    const data = await res.json();
+    console.log("Cloudinary upload:", data);
+    if(data.secure_url) return data.secure_url;
     return null;
   } catch(e){console.error("Upload error",e);return null;}
 }
