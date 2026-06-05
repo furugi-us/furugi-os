@@ -671,8 +671,12 @@ async function saveQuickAdd() {
   await fetch(FN_URL,{
     method:"POST",
     headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({actions:{action:"add",name,status:"unposted",cost,soldPrice:0,trip,sku,image_url:image_url||"",category:"",tier:1}})
+    body:JSON.stringify({actions:[
+      {action:"add",name,status:"unposted",cost,soldPrice:0,trip,sku,image_url:image_url||"",category:"",tier:1},
+      {action:"addspend",amount:cost}
+    ]})
   }).catch(()=>{});
+  totalSpend+=cost;
 
   closeQuickAdd();
   renderStats();
@@ -985,8 +989,9 @@ async function send() {
     const res=await fetch(FN_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({system:buildSystemPrompt(),messages:msgs.slice(-10).map(m=>({role:m.role==="ai"?"assistant":"user",content:m.text}))})});
     const data=await res.json();
     const raw=data.content?.[0]?.text||"";
-    const jm=raw.match(/(\[[\s\S]*?\]|\{[\s\S]*?\})\s*$/);
-    const replyText=raw.replace(/(\[[\s\S]*?\]|\{[\s\S]*?\})\s*$/,"").trim();
+    const cleaned=raw.replace(/```json\n?/g,'').replace(/```\n?/g,'');
+const jm=cleaned.match(/(\[[\s\S]*?\]|\{[\s\S]*?\})\s*$/);
+const replyText=cleaned.replace(/(\[[\s\S]*?\]|\{[\s\S]*?\})\s*$/,"").trim();
     if(jm){try{const actions=JSON.parse(jm[0]);if(Object.keys(actions).length>0||Array.isArray(actions)){await fetch(FN_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({actions})}).catch(()=>{});applyActionsLocally(actions);}}catch(e){}}
     const aiText=replyText||"Done.";
     msgs.push({role:"ai",text:aiText});
